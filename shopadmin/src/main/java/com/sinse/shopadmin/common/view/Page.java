@@ -1,0 +1,22 @@
+package com.sinse.shopadmin.common.view;
+
+import java.awt.Dimension;
+
+import javax.swing.JPanel;
+
+import com.sinse.shopadmin.AppMain;
+import com.sinse.shopadmin.common.config.Config;
+
+// 쇼핑몰 관리자 페이지의 최상단 객체
+// 서로 공유할 데이터가 있다면 appMain을 통해서 공유하도록 한다.
+public class Page extends JPanel{
+	public AppMain appMain;
+	
+	public Page(AppMain appMain) {
+		this.appMain = appMain;
+		
+		setPreferredSize(new Dimension(Config.ADMINMAIN_WIDTH-Config.SIDE_WIDTH, Config.ADMINMAIN_HEIGHT-Config.UTIL_HEIGHT));
+		setVisible(false);
+	}
+
+}
