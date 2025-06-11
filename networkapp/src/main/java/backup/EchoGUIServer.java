@@ -1,6 +1,7 @@
-package com.sinse.networkapp.echo.bak;
+package backup;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,6 +23,8 @@ public class EchoGUIServer extends JFrame{
 		bt = new JButton("서버 가동");
 		area = new JTextArea();
 		scroll = new JScrollPane(area);
+		
+		area.setBackground(Color.YELLOW);
 		
 		p_north.add(t_port);
 		p_north.add(bt);

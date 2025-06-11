@@ -1,6 +1,7 @@
-package com.sinse.networkapp.echo.bak;
+package backup;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -27,6 +28,8 @@ public class EchoClient extends JFrame{
 		area = new JTextArea();
 		scroll = new JScrollPane(area);
 		t_input = new JTextField();
+		
+		area.setBackground(Color.YELLOW);
 		
 		createIp();
 		
