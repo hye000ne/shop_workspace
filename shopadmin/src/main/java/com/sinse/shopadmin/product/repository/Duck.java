@@ -6,14 +6,11 @@ public class Duck {
 	
 	//생성자를 막아버린다.
 	private Duck() {
-		
 	}
-	
 	public static Duck getD() {
 		if(d==null) {
-			d = new Duck();
+			d=new Duck();
 		}
-		
 		return d;
 	}
 }

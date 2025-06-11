@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -87,13 +89,18 @@ public class LoginForm extends Page{
 								//일치하는 데이터가 있다는 것은 로그인 성공!!
 				JOptionPane.showMessageDialog(this, "로그인 성공");
 				
+				
 				//로그인 성공한 사람의 정보 담기!!!
 				Admin admin= new Admin();//empty 상태의 객체 생성 
 				admin.setAdmin_id(rs.getInt("admin_id"));
 				admin.setId(rs.getString("id"));
 				admin.setPwd(rs.getString("pwd"));
 				admin.setName(rs.getString("name"));
-				appMain.admin = admin;
+				
+				//AppMain이 보유하고 있는 Admin 모델객체의 현재 null값을 위에서 생성한 Admin대체
+				appMain.admin=admin;
+				
+				//현재 유저가 보고 있는 페이자가 MainPage로 교체. 
 				appMain.showPage(Config.MAIN_PAGE);
 				//주의 System.exit(0) 은 전체 프로그램이 끝나버림..
 			}else {
@@ -120,6 +127,7 @@ public class LoginForm extends Page{
 		
 	}
 }
+
 
 
 

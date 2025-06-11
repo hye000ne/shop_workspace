@@ -7,6 +7,8 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import com.sinse.shop.common.config.Config;
+
 //이미지와 관련된 유용한 공통 기능을 제공해주는 유틸 클래스 
 public class ImageUtil {
 
@@ -32,6 +34,7 @@ public class ImageUtil {
 	
 	
 }
+
 
 
 

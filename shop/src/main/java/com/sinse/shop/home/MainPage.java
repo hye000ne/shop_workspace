@@ -22,7 +22,7 @@ public class MainPage extends Page{
 		//생성
 		//패널을 이름없는 익명 클래스로 재정의하는 코드를 작성...장점? 별도의 .java파일을 생성할 필요
 		//없고, 내부 클래스이다 보니, 외부클래스인 MainPage의 멤버를 공유할 수 있다.
-		image = imageUtil.getImage("images/banner.png",Config.MAIN_VISUAL_WIDTH, Config.MAIN_VISUAL_HEIGHT);
+		image = imageUtil.getImage("images/banner.jpg",Config.MAIN_VISUAL_WIDTH, Config.MAIN_VISUAL_HEIGHT);
 		
 		p_visual = new JPanel() {
 			protected void paintComponent(Graphics g) {
@@ -56,6 +56,7 @@ public class MainPage extends Page{
 		setVisible(true);
 	}
 }
+
 
 
 

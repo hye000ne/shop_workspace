@@ -5,9 +5,10 @@ import java.awt.Color;
 import com.sinse.shopadmin.AppMain;
 import com.sinse.shopadmin.common.view.Page;
 
-public class CustomerPage extends Page {
+public class CustomerPage extends Page{
+	
 	public CustomerPage(AppMain appMain) {
 		super(appMain);
-		setBackground(Color.black);
+		setBackground(Color.BLUE);
 	}
 }

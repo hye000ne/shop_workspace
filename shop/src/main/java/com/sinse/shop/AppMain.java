@@ -85,7 +85,7 @@ public class AppMain extends JFrame{
 		showPage(Config.MAIN_PAGE);
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE); //db연동 후엔 지우기
-		setBounds(50, 50, 1400, 900);
+		setBounds(2000, 50, 1400, 900);
 		setVisible(true);
 	}
 	
@@ -116,6 +116,7 @@ public class AppMain extends JFrame{
 		new AppMain();
 	}
 }
+
 
 
 
