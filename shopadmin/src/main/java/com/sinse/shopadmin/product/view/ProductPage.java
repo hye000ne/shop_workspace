@@ -1,6 +1,5 @@
 package com.sinse.shopadmin.product.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -26,9 +25,19 @@ import javax.swing.JTextField;
 
 import com.sinse.shopadmin.AppMain;
 import com.sinse.shopadmin.common.view.Page;
+import com.sinse.shopadmin.product.model.Color;
+import com.sinse.shopadmin.product.model.Product;
+import com.sinse.shopadmin.product.model.ProductColor;
+import com.sinse.shopadmin.product.model.ProductImg;
+import com.sinse.shopadmin.product.model.ProductSize;
+import com.sinse.shopadmin.product.model.Size;
 import com.sinse.shopadmin.product.model.SubCategory;
 import com.sinse.shopadmin.product.model.TopCategory;
 import com.sinse.shopadmin.product.repository.ColorDAO;
+import com.sinse.shopadmin.product.repository.ProductColorDAO;
+import com.sinse.shopadmin.product.repository.ProductDAO;
+import com.sinse.shopadmin.product.repository.ProductImgDAO;
+import com.sinse.shopadmin.product.repository.ProductSizeDAO;
 import com.sinse.shopadmin.product.repository.SizeDAO;
 import com.sinse.shopadmin.product.repository.SubCategoryDAO;
 import com.sinse.shopadmin.product.repository.TopCategoryDAO;
@@ -67,15 +76,21 @@ public class ProductPage extends Page{
 	SubCategoryDAO subCategoryDAO;
 	ColorDAO colorDAO;
 	SizeDAO sizeDAO;
+	ProductDAO productDAO;
+	ProductColorDAO productColorDAO;
+	ProductSizeDAO productSizeDAO;
+	ProductImgDAO productImgDAO;
 	
 	JFileChooser chooser;
-	File[] files; // 유저가 선택한 파일 배열 (파일 복사(업로드)하려면 파일 대상으로 해야함) FileInputStream, Output의 대상은 File이기 때문
 	Image[] imgArray; //유저가 선택한 파일로부터 생성된 이미지 배열
+	File[] files;//파일 복사 즉 업로드를 진행하려면, 이미지가 아닌 파일을 대상으로 할 수 있다..
+					//FileInputStream, FileOuputStream의 대상은 File 이기 때문임...
 	
+	File[] newFiles;
 	
 	public ProductPage(AppMain appMain) {
 		super(appMain);
-		setBackground(Color.CYAN);
+		setBackground(java.awt.Color.CYAN);
 		
 		//생성 
 		la_topcategory = new JLabel("최상위 카테고리");
@@ -123,6 +138,11 @@ public class ProductPage extends Page{
 		subCategoryDAO = new SubCategoryDAO();
 		colorDAO = new ColorDAO();
 		sizeDAO = new SizeDAO();
+		productDAO = new ProductDAO();
+		productColorDAO = new ProductColorDAO();
+		productSizeDAO = new ProductSizeDAO();
+		productImgDAO = new ProductImgDAO();
+		
 		chooser = new JFileChooser("C:\\lecture_workspace\\front_workspace\\images");
 		chooser.setMultiSelectionEnabled(true);//다중 선택 가능하도록 설정..
 		
@@ -187,6 +207,7 @@ public class ProductPage extends Page{
 		cb_topcategory.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange() == ItemEvent.SELECTED) {
+					System.out.println("다른 아이템을 선택햇어?");
 						
 					TopCategory topCategory=(TopCategory)cb_topcategory.getSelectedItem();
 					
@@ -203,47 +224,17 @@ public class ProductPage extends Page{
 		
 		//파일 탐색기 띄우기 
 		bt_open.addActionListener(e->{
-			int result = chooser.showOpenDialog(ProductPage.this);
 			
-			if(result == JFileChooser.APPROVE_OPTION) preview();
+			int result=chooser.showOpenDialog(ProductPage.this);
+			
+			if(result==JFileChooser.APPROVE_OPTION)
+				preview();
 		});
 		
-		// 등록 이벤트
+		//등록 버튼과 리스너 연결 
 		bt_regist.addActionListener(e->{
-			regist();
+			regist();	
 		});
-		
-	}
-	
-	// 새창으로 시각적 효과를 위해 각 이미지의 업로드 진행율을 보여주자 
-	public void upload() {
-		UploadDialog dialog = new UploadDialog(this);
-		
-	}
-	
-	// mysql에 상품 등록 관련 쿼리 수행
-	public void insert() {
-		
-	}
-	
-	// 이미지 업로드 및 DB insert 
-	public void regist() {
-		// 유효성 체크
-		if(cb_topcategory.getSelectedIndex()==0) JOptionPane.showMessageDialog(this,"상위 카테고리를 선택하셔야합니다.");
-		else if(cb_subcategory.getSelectedIndex()==0) JOptionPane.showMessageDialog(this,"하위 카테고리를 선택하셔야합니다.");
-		else if(t_product_name.getText().length()<1) JOptionPane.showMessageDialog(this,"상품명을 입력하세요.");
-		else if(t_brand.getText().length()<1) JOptionPane.showMessageDialog(this,"브랜드를 입력하세요.");
-		else if(t_price.getText().length()<1) JOptionPane.showMessageDialog(this,"가격을 입력하세요.");
-		else if(t_discount.getText().length()<1) JOptionPane.showMessageDialog(this,"할인가를 입력하세요.");
-		else if(t_color.getMinSelectionIndex() == -1) JOptionPane.showMessageDialog(this,"색상을 선택하세요.");
-		else if(t_size.getMinSelectionIndex() == -1) JOptionPane.showMessageDialog(this,"사이즈를 선택하세요.");
-		else if(files.length<1) JOptionPane.showMessageDialog(this,"상품 이미지를 선택하세요.");
-		else if(t_introduce.getText().length()<1) JOptionPane.showMessageDialog(this,"상품 소개를 선택하세요.");
-		else if(t_detail.getText().length()<1) JOptionPane.showMessageDialog(this,"상품 상세내용을 선택하세요.");
-		else {
-			upload();
-			insert();
-		}
 	}
 	
 	public void preview() {
@@ -252,11 +243,10 @@ public class ProductPage extends Page{
 		
 		if(files.length > 6) {
 			JOptionPane.showMessageDialog(this, "이미지는 최대 6개까지 가능합니다.");
-		} else {
+		}else {
 			imgArray = new Image[files.length];//유저가 선택한 파일의 수에 맞게 이미지배열 준비
 			
-			//파일을 파일일뿐, 이미지가 아니므로, 파일을 이용하여 이미지를 만들자!!!
-			
+			//파일은 파일 일뿐, 이미지가 아니므로, 파일을 이용하여 이미지를 만들자!!!
 			try {
 				for(int i=0;i<files.length;i++) {
 					BufferedImage buffrImg=ImageIO.read(files[i]);
@@ -265,7 +255,6 @@ public class ProductPage extends Page{
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			
 			//그림 다시 그리기 
 			p_preview.repaint();
 		}
@@ -284,7 +273,7 @@ public class ProductPage extends Page{
 		for(int i=0;i<topList.size();i++) {
 			TopCategory topcategory=topList.get(i);
 			cb_topcategory.addItem(topcategory);
-		}		
+		}
 	}
 	
 	public void getSubCategory(TopCategory topCategory) {
@@ -298,8 +287,6 @@ public class ProductPage extends Page{
 		dummy.setSub_name("하위 카테고리를 선택하세요");
 		dummy.setSubcategory_id(0);
 		cb_subcategory.addItem(dummy);
-		
-		 
 		
 		//서브 카테고리 수만큼 반복하면서, 두번째 콤포박스에 SubCategory 모델을 채워넣기 
 		for(int i=0;i<subList.size();i++) {
@@ -316,8 +303,100 @@ public class ProductPage extends Page{
 		t_size.setListData(new Vector(sizeDAO.selectAll()));
 	}
 	
+	public void upload() {
+		//시각적 효과를 위해 각, 이미지의 업로드 진행율을 보여주자 , 새창으로...
+		UploadDialog dialog=new UploadDialog(this);
+	}
+	
+	//mysql 에 상품 등록관련 쿼리 수행 
+	public void insert() {
+		//ProductDAO 에게 일 시키기!!!
+		
+		//Product 모델 인스턴스 1개를 만들어, 안에다가
+		//상품 등록폼의 데이터를 채워넣자!!(setter)
+		Product product = new Product();
+		
+		product.setSubCategory((SubCategory)cb_subcategory.getSelectedItem()); // fk값??
+		product.setProduct_name(t_product_name.getText()); //상품명..
+		product.setBrand(t_brand.getText());
+		product.setPrice(Integer.parseInt(t_price.getText()));
+		product.setDiscount(Integer.parseInt(t_discount.getText()));
+		product.setIntroduce(t_introduce.getText());
+		product.setDetail(t_detail.getText());
+		
+		int result = productDAO.insert(product);
+		
+		int product_id=productDAO.selectRecentPk();
+		product.setProduct_id(product_id);//구해온 최신 pk를 Product에 반영 
+		
+		//상품에 딸려있는 색상들 등록하기 
+		List<Color> colorList=t_color.getSelectedValuesList();
+		
+		for(Color color : colorList) {
+			//System.out.println(color.getColor_name());
+			
+			//ProductColor 에 어떤 상품이, 어떤 색상을....
+			ProductColor productColor=new ProductColor();
+			productColor.setProduct(product); //어떤 상품이?
+			productColor.setColor(color); //어떤 색상을?
+			productColorDAO.insert(productColor);
+		}
+		
+		List<Size> sizeList = t_size.getSelectedValuesList();
+		
+		for(Size size : sizeList) {
+			ProductSize productSize = new ProductSize();
+			productSize.setProduct(product);
+			productSize.setSize(size);
+			
+			productSizeDAO.insert(productSize);
+		}
+		
+		for(int i=0;i<newFiles.length;i++) {
+			File file = newFiles[i]; // 업로드된 파일 객체를 꺼내보자
+			ProductImg productImg = new ProductImg();
+			productImg.setProduct(product);
+			productImg.setFilename(file.getName());
+			
+			productImgDAO.insert(productImg);
+		}
+	}
+	
+	
+	//이미지 업로드 및 DB insert  
+	public void regist() {
+		//양식을 제대로 입력했을때
+		
+		//상위카테고리 유효성 체크
+		if(cb_topcategory.getSelectedIndex()==0) {
+			JOptionPane.showMessageDialog(this, "상위 카테고리를 선택하셔야 합니다");
+		}else if(cb_subcategory.getSelectedIndex()==0) {
+			JOptionPane.showMessageDialog(this, "하위 카테고리를 선택하셔야 합니다");
+		}else if(t_product_name.getText().length()<1) {
+			JOptionPane.showMessageDialog(this, "상품명을 입력하세요");
+		}else if(t_brand.getText().length()<1) {
+			JOptionPane.showMessageDialog(this, "브랜드를 입력하세요");
+		}else if(t_price.getText().length()<1) {
+			JOptionPane.showMessageDialog(this, "가격을 입력하세요");
+		}else if(t_discount.getText().length()<1) {
+			JOptionPane.showMessageDialog(this, "할인가를 입력하세요");
+		}else if(t_color.getMinSelectionIndex()<0 ) {
+			JOptionPane.showMessageDialog(this, "1개 이상의 색상을 선택하세요");
+		}else if(t_size.getMinSelectionIndex()<0 ) {
+			JOptionPane.showMessageDialog(this, "1개 이상의 사이즈를 선택하세요");
+		}else if(files.length<1 ) {
+			JOptionPane.showMessageDialog(this, "상품 이미지를 선택하세요");
+		}else if(t_introduce.getText().length() <1) {
+			JOptionPane.showMessageDialog(this, "상품 소개를 입력하세요");
+		}else if(t_detail.getText().length() <1) {
+			JOptionPane.showMessageDialog(this, "상세내용을 입력하세요");
+		}else {
+			upload();//업로드
+			
+			insert(); //mysql
+		}
+	}
 }
-
 
 
 

@@ -42,15 +42,19 @@ public class EchoClient extends JFrame{
 		add(scroll);
 		add(t_input, BorderLayout.SOUTH);
 		
-		setBounds(2000, 100, 300,400);
+		setBounds(100, 100, 300,400);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
+	
 	public void createIp() {
+		box_ip.addItem("192.168.60.41"); 
+		box_ip.addItem("192.168.60.19"); 
 		for(int i=15;i<=30;i++) {
 			box_ip.addItem("192.168.60"+i);
 		}
 	}
+	
 	public static void main(String[] args) {
 		new EchoClient();
 	}

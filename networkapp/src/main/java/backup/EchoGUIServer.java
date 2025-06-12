@@ -31,7 +31,7 @@ public class EchoGUIServer extends JFrame{
 		add(p_north, BorderLayout.NORTH);
 		add(scroll);
 	
-		setBounds(2300, 100, 300,400);
+		setBounds(100, 100, 300,400);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
