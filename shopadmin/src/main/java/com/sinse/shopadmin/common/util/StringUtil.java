@@ -29,6 +29,7 @@ public class StringUtil {
 				sb.append(hex); //스트링 누적 
 			}
 			//System.out.println(sb.toString().length());
+			System.out.println(sb.toString());
 			
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();

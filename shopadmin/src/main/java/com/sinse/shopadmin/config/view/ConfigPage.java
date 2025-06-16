@@ -147,6 +147,7 @@ public class ConfigPage extends Page{
 		//Collection framework에 최적화된 개선된 for문 improved for  java 5버전
 		Vector vec=new Vector(colorList); //ArrayList 와 동일하지만, 쓰레드 동기화 지원..(내부적 연산이 들어가서 속도 느림)
 		list_color.setListData(vec);
+		System.out.println(vec.size());
 	}
 	
 	public void getListSize() {

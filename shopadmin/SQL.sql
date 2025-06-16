@@ -6,8 +6,7 @@ create table admin(
 	id varchar(20),
 	pwd varchar(20),
 	name varchar(20),
-	email varchar(20)
-);
+	email varchar(20));
 ---------------------------
 --최상위 카테고리
 ---------------------------
@@ -50,15 +49,13 @@ insert into subcategory(sub_name, topcategory_id) values('귀걸이', 4);
 ---------------------------
 create table color(
 	color_id int primary key auto_increment,
-	color_name varchar(15)
-);
+	color_name varchar(15));
 ---------------------------
 --사이즈 표
 ---------------------------
 create table size(
 	size_id int primary key auto_increment,
-	size varchar(10)
-);
+	size varchar(10));
 ---------------------------
 --상품 테이블
 ---------------------------
@@ -83,8 +80,7 @@ create table product_size(
 	constraint fk_product_product_size foreign key(product_id)
 	references product(product_id),
 	constraint fk_size_product_size foreign key(size_id)
-	references size(size_id)
-);
+	references size(size_id));
 ---------------------------
 --상품 별 색상 정보
 ---------------------------
@@ -95,48 +91,7 @@ create table product_color(
 	constraint fk_product_product_color foreign key(product_id)
 	references product(product_id),
 	constraint fk_color_product_color foreign key(color_id)
-	references color(color_id)
-);
+	references color(color_id));
 
-
-select * from topcategory;
-
-select *
-from topcategory t join subcategory s 
-on t.topcategory_id  = s.topcategory_id;
-
-insert into topcategory(top_name) values('가방');
-
--- 각 상위 카테고리별 소속된 하위카테고리의 수에 대한 통계
--- 상의 4
--- 하의 4
--- 가방 4
-select top_name, count(*)
-from topcategory t left outer join subcategory s
-on t.topcategory_id  = s.topcategory_id
-group by top_name;
-
-create table test( 
-	test_id int primary key auto_increment
-	, name varchar(20)
-);
-
-insert into test(name) values ('scott');
-insert into test(name) values ('scott2');
-insert into test(name) values ('scott3');
-
-select * from test;
-
--- 가장 최신에 들어가 pk 알아내는 방법
--- select max(test_id) from test;
-select LAST_INSERT_ID();
-
-create table product_img(
-	product_img_id int primary key auto_increment
-	, filename varchar(20)
-	, product_id int
-	, constraint fk_product_product_img foreign key(product_id)
-	references product(product_id)
-);
-
+select * from product_color;
 
